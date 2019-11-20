@@ -1,0 +1,27 @@
+HTTP规范[RFC 1945; RFC 2616]包含了对HTTP报文格式的定义。HTTP报文有两种：请求报文和响应报文
+1、HTTP请求报文
+  GET /somedir/page.html HTTP/1.1
+  Host: www.someschool.edu
+  Connection: close
+  User-agent: Mozilla/5.0
+  Accept-language: fr
+  虽然这个特定的报文仅由5行，但一个请求报文能够具有更多的行或者至少为一行。HTTP请求报文的第一行叫做请求行，其后继的行叫做首部行。请求行有三个字段：方法字段、URL字段和HTTP字段。方法字段可以取几种不同的值，包括GET、POST、HEAD、PUT和DELETE。绝大部分的HTTP请求报文使用GET方法。当浏览器请求一个对象时，使用GET方法，在URL字段带有请求对象的标识。在本例中，该浏览器正在请求对象/somedir/page.html。其版本字段是自解释的；在本例中，浏览器实现的是HTTP/1.1版本
+  首部行Host: www.someschool.edu指明了对象所在的主机。你也许认为该首部行是不必要的，因为在该主机中已经有一条TCP连接存在了。但是，该首部行提供的信息是Web代理高速缓存所要求的。通过包含Connection: close首部行，该浏览器告诉服务器不希望麻烦地使用持续连接，他要求服务器再发送完被请求的对象后就关闭这条连接。User-agent：首部行用来指明用户代理，即向服务器发送请求的浏览器的类型。这里浏览器类型是Mozilla/5.0，即Firefox浏览器。这个首部行是有用的，因为服务器可以有效地为不同类型的用户代理实际发送相同对象的不同的版本。最后Accept-language：首部行仅是HTTP中可用的众多内容协商首部之一
+  使用GET方法时实体体为空，而是用POST方法时才使用该实体体。
+  当然，HTML表单经常使用GET方法，并在所请求的URL中包括输入的数据。例如，一个表单使用GET方法，它有两个字段，分别填写的是“monkeys”和“bananas”，这样，该URL结构为www.somesite.com/animalsearch?monkeys%bananas。要留意这种扩展URL
+  HEAD方法类似于GET方法，当服务器收到使用HEAD方法的请求时，将会用一个HTTP报文进行响应，但是并不返回请求对象。应用程序开发者常用HEAD方法进行调试跟踪。PUT方法常与Web发型工具联合使用，他允许用户上传对象到指定的Web服务器上指定的路径。PUT方法也被哪些需要向Web服务器上传对象的应用程序使用。DELETE方法允许用户或者应用程序删除web服务器上的对象
+2、HTTP响应报文
+  HTTP/1.1 200 OK
+  Connection: close
+  Date: Tue, 09 Aug 2011 15:44:04 GMT
+  Server: Apache/2.2.3 (CentOS)
+  Last-Modified: Tue, 09 Aug 2011 15:11:03 GMT
+  Content-Length: 6821
+  Content-Type: text/html
+  它有三个部分：一个初始状态行，6个首部行，然后是实体体。实体体部分是报文的主要部分，即它包含了所请求的对象本身（表示为data data……）。状态行有3个字段：协议版本字段、状态码和响应状态信息。在这个例子中，状态行只是服务器正在使用HTTP/1.1，并且一切正常
+  服务器用Connection: close首部行告诉客户，发送完报文后将关闭TCP连接。Date:首部行只是服务器产生并发送该响应报文的日期和时间。值的一提的是，这个不是指对象创建或最后修改的时间；而是服务器从它的文件系统中检索到该对象，插入到响应报文，并发送该响应报文的时间。Server:首部行指示该报文是由一台Apache Web服务器产生的，它类似于HTTP请求报文中的User-agent:首部行。Last-Modified:首部行知识了对象创建或者最后修改的日期时间。该首部行对极可能在本地客户也可能在网络缓存服务器上的对象缓存来说非常重要。Content-Length:首部行知识了被发送对象中的字节数。Content-Type:首部行指示了实体体中的对象是HTML文本
+  200 OK：请求成功，信息在返回的响应报文中
+  301 Moved Permanently：请求的对象已经被永久转移了，新的URL定义在响应报文的Location:首部行中。客户软件将自动获取新的URL
+  400 Bad Request：一个通用差错代码，只是该请求不能被服务器理解
+  404 Not Found：被请求的文档不在服务器上
+  505 HTTP Version Not Supportes：服务器不支持请求报文使用的HTTP协议版本
